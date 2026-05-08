@@ -132,7 +132,7 @@ namespace pcpp
 		{
 			dpdkParamsStream >> dpdkParamsArray[i];
 			initDpdkArgvBuffer[i] = new char[dpdkParamsArray[i].length() + 1];
-			strcpy(initDpdkArgvBuffer[i], dpdkParamsArray[i].c_str());
+			memcpy(initDpdkArgvBuffer[i], dpdkParamsArray[i].c_str(), dpdkParamsArray[i].length() + 1);
 			i++;
 		}
 

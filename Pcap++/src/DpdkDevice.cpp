@@ -140,7 +140,7 @@ namespace pcpp
 		rte_eth_dev_get_mtu((uint8_t)m_Id, &m_DeviceMtu);
 
 		char mBufMemPoolName[32];
-		sprintf(mBufMemPoolName, "MBufMemPool%d", m_Id);
+		snprintf(mBufMemPoolName, sizeof(mBufMemPoolName), "MBufMemPool%d", m_Id);
 		if (!initMemPool(m_MBufMempool, mBufMemPoolName, mBufPoolSize))
 		{
 			PCPP_LOG_ERROR("Could not initialize mBuf mempool. Device not initialized");
