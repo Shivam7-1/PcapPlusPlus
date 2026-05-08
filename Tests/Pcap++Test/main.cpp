@@ -239,6 +239,7 @@ int main(int argc, char* argv[])
 	PTF_RUN_TEST(TestPcapNgZstdCompressionLevels, "no_network;pcap;pcapng");
 	PTF_RUN_TEST(TestPcapNgFileReadWriteAdv, "no_network;pcap;pcapng");
 	PTF_RUN_TEST(TestPcapNgFileTooManyInterfaces, "no_network;pcap;pcapng");
+	PTF_RUN_TEST(TestPcapNgSimplePacketWithoutInterface, "no_network;pcap;pcapng");
 	PTF_RUN_TEST(TestPcapNgFilePrecision, "no_network;pcapng");
 	PTF_RUN_TEST(TestPcapFileReadLinkTypeIPv6, "no_network;pcap");
 	PTF_RUN_TEST(TestPcapFileReadLinkTypeIPv4, "no_network;pcap");

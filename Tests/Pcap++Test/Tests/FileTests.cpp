@@ -1708,6 +1708,39 @@ PTF_TEST_CASE(TestPcapNgFileTooManyInterfaces)
 	readerDev.close();
 }  // TestPcapNgFileTooManyInterfaces
 
+PTF_TEST_CASE(TestPcapNgSimplePacketWithoutInterface)
+{
+	TempFile pcapNgFile("pcapng");
+
+	// Section Header Block + Simple Packet Block (without Interface Description Block)
+	const std::vector<uint8_t> malformedPcapNg = {
+		0x0a, 0x0d, 0x0d, 0x0a, 0x1c, 0x00, 0x00, 0x00, 0x4d, 0x3c, 0x2b, 0x1a, 0x01, 0x00,
+		0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x1c, 0x00, 0x00, 0x00,
+		0x03, 0x00, 0x00, 0x00, 0x14, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x01, 0x02,
+		0x03, 0x04, 0x14, 0x00, 0x00, 0x00
+	};
+	pcapNgFile << malformedPcapNg;
+	pcapNgFile.close();
+
+	pcpp::PcapNgFileReaderDevice readerDev(pcapNgFile.getFileName());
+	PTF_ASSERT_TRUE(readerDev.open());
+
+	pcpp::RawPacket rawPacket;
+	{
+		SuppressLogs suppressLogs;
+		PTF_ASSERT_TRUE(readerDev.getNextPacket(rawPacket));
+	}
+
+	PTF_ASSERT_EQUAL(rawPacket.getRawDataLen(), 4);
+	PTF_ASSERT_EQUAL(rawPacket.getFrameLength(), 4);
+	PTF_ASSERT_EQUAL(rawPacket.getLinkLayerType(), pcpp::LINKTYPE_INVALID, enum);
+	const std::array<uint8_t, 4> expectedPayload = { 0x01, 0x02, 0x03, 0x04 };
+	PTF_ASSERT_BUF_COMPARE(rawPacket.getRawData(), expectedPayload.data(), expectedPayload.size());
+
+	PTF_ASSERT_FALSE(readerDev.getNextPacket(rawPacket));
+	readerDev.close();
+}  // TestPcapNgSimplePacketWithoutInterface
+
 PTF_TEST_CASE(TestPcapFileReadLinkTypeIPv6)
 {
 	pcpp::PcapFileReaderDevice readerDev(EXAMPLE_LINKTYPE_IPV6);
