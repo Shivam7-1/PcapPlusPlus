@@ -1167,6 +1167,8 @@ namespace pcpp
 	{
 		std::vector<SSLVersion> result;
 		uint16_t extensionLength = getLength();
+		if (extensionLength == 0)
+			return result;
 		if (extensionLength == 2)  // server hello message
 		{
 			result.push_back(SSLVersion(be16toh(*reinterpret_cast<uint16_t*>(getData()))));
